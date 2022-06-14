@@ -13,6 +13,12 @@
 
 <body>
 
+	<h1>Inbox</h1>
+	
+	<div th:each="folder : ${userFolders}"></div>
+	
+		<p th:text="${folder.label}"></p>
+
 </body>
 
 
