@@ -1,4 +1,4 @@
-package com.supere77;
+package com.supere77.inbox;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
