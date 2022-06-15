@@ -12,9 +12,9 @@ public class FoldeService {
 
 	public List<Folder> getDefaultFolder(String userId) {
 		return Arrays.asList(
-				new Folder(userId, "Inbox", "green"), 
-				new Folder(userId, "Sent", "blue"),
-				new Folder(userId, "Deleted", "yellow"));
+				new Folder(userId, "Important", "green"), 
+				new Folder(userId, "Inbox", "blue"),
+				new Folder(userId, "Sent", "yellow"));
 	}
 
 }
