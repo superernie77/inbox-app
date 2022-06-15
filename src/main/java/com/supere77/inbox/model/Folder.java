@@ -9,7 +9,6 @@ import org.springframework.data.cassandra.core.mapping.Table;
 @Table(value = "folders_by_user")
 public class Folder {
 	
-	
 	@PrimaryKeyColumn(name="user_id", ordinal = 0, type= PrimaryKeyType.PARTITIONED)
 	private String userId;
 	
@@ -18,6 +17,17 @@ public class Folder {
 		
 	@CassandraType(type = Name.TEXT)
 	private String color;
+
+	public Folder() {
+		super();
+	}
+
+	public Folder(String userId, String label, String color) {
+		super();
+		this.userId = userId;
+		this.label = label;
+		this.color = color;
+	}
 
 	public String getUserId() {
 		return userId;

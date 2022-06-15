@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.supere77.inbox.model.Folder;
 import com.supere77.inbox.repo.FolderRepository;
+import com.supere77.inbox.service.FoldeService;
 
 @Controller
 public class InboxController {
@@ -19,6 +20,8 @@ public class InboxController {
 	@Autowired
 	private FolderRepository repo;
 	
+	@Autowired
+	private FoldeService folderService;
 	
 	@GetMapping(value = "/")
 	public ModelAndView homePage(@AuthenticationPrincipal OAuth2User principal) {
@@ -27,6 +30,10 @@ public class InboxController {
 			
 			ModelAndView modelAndView = new ModelAndView("inbox-page");
 			String user = principal.getAttribute("login");
+			
+			List<Folder> defaultFolder = folderService.getDefaultFolder(user);
+			modelAndView.addObject("defaultFolders",defaultFolder);
+			
 			List<Folder> userFolders = repo.findAllByUserId(user);
 			modelAndView.addObject("userFolders",userFolders);
 			
@@ -34,5 +41,4 @@ public class InboxController {
 		}
 		return new ModelAndView("index");
 	}
-
 }
