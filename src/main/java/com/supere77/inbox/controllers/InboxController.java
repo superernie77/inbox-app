@@ -10,7 +10,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.supere77.inbox.model.EmailListItem;
 import com.supere77.inbox.model.Folder;
+import com.supere77.inbox.repo.EmailListItemRepository;
 import com.supere77.inbox.repo.FolderRepository;
 import com.supere77.inbox.service.FoldeService;
 
@@ -23,6 +25,9 @@ public class InboxController {
 	@Autowired
 	private FoldeService folderService;
 	
+	@Autowired
+	private EmailListItemRepository emailRepo;
+	
 	@GetMapping(value = "/")
 	public ModelAndView homePage(@AuthenticationPrincipal OAuth2User principal) {
 		
@@ -30,12 +35,18 @@ public class InboxController {
 			
 			ModelAndView modelAndView = new ModelAndView("inbox-page");
 			String user = principal.getAttribute("login");
+			modelAndView.addObject("username", principal.getAttribute("name"));
 			
+			// fetch folder
 			List<Folder> defaultFolder = folderService.getDefaultFolder(user);
 			modelAndView.addObject("defaultFolders",defaultFolder);
 			
 			List<Folder> userFolders = repo.findAllByUserId(user);
 			modelAndView.addObject("userFolders",userFolders);
+			
+			// fetch messages
+			List<EmailListItem> emails =  emailRepo.findByKey_IdAndKey_Label(user, "Inbox" );
+			modelAndView.addObject("emaillist", emails);
 			
 			return modelAndView;
 		}
