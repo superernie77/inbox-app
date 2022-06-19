@@ -2,6 +2,7 @@ package com.supere77.inbox.model;
 
 import java.util.List;
 
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
@@ -21,6 +22,17 @@ public class EmailListItem {
 	
 	@CassandraType(type = Name.BOOLEAN)
 	private boolean isUnread;
+	
+	@Transient
+	private String dateString; 
+
+	public String getDateString() {
+		return dateString;
+	}
+
+	public void setDateString(String dateString) {
+		this.dateString = dateString;
+	}
 
 	public EmailListItemKey getKey() {
 		return key;
