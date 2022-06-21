@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.datastax.oss.driver.api.core.uuid.Uuids;
@@ -33,7 +34,9 @@ public class InboxController {
 	private EmailListItemRepository emailRepo;
 	
 	@GetMapping(value = "/")
-	public ModelAndView homePage(@AuthenticationPrincipal OAuth2User principal) {
+	public ModelAndView homePage(
+			@RequestParam(required = false) String folder,
+			@AuthenticationPrincipal OAuth2User principal) {
 		
 		if(principal != null && StringUtils.hasText(principal.getAttribute("login"))) {
 			
@@ -49,8 +52,14 @@ public class InboxController {
 			modelAndView.addObject("userFolders",userFolders);
 			
 			// fetch messages
-			List<EmailListItem> emails =  emailRepo.findByKey_IdAndKey_Label(user, "Inbox" );
+			if(!StringUtils.hasText(folder)) {
+				folder = "Inbox";
+			}
+			
+			List<EmailListItem> emails =  emailRepo.findByKey_IdAndKey_Label(user, folder );
 			modelAndView.addObject("emaillist", emails);
+			modelAndView.addObject("folder", folder);
+			
 			
 			PrettyTime p = new PrettyTime();
 			emails.forEach( i -> {

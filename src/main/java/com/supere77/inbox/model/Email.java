@@ -28,6 +28,10 @@ public class Email {
 	@CassandraType(type = Name.TEXT)
 	private String body;
 
+	public String getRecipientString() {
+		return String.join(",", to);
+	}
+	
 	public UUID getId() {
 		return id;
 	}
