@@ -4,6 +4,7 @@ package com.supere77.inbox;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -18,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.datastax.oss.driver.api.core.uuid.Uuids;
+import com.supere77.inbox.model.Email;
 import com.supere77.inbox.model.EmailListItem;
 import com.supere77.inbox.model.EmailListItemKey;
 import com.supere77.inbox.model.Folder;
 import com.supere77.inbox.repo.EmailListItemRepository;
+import com.supere77.inbox.repo.EmailRepository;
 import com.supere77.inbox.repo.FolderRepository;
 
 @SpringBootApplication
@@ -42,7 +45,10 @@ public class InboxApp {
 	private FolderRepository repo;
 	
 	@Autowired
-	private EmailListItemRepository emailRepo;
+	private EmailListItemRepository emailListRepo;
+	
+	@Autowired
+	private EmailRepository emailRepo;
 	
 	@PostConstruct
 	public void init() {
@@ -71,14 +77,27 @@ public class InboxApp {
 			EmailListItemKey key = new EmailListItemKey();
 			key.setId("superernie77");
 			key.setLabel("Inbox");
-			key.setTimeUUID(Uuids.timeBased());
+			
+			UUID createdAt = Uuids.timeBased();
+			
+			key.setTimeUUID(createdAt);
 			
 			EmailListItem item = new EmailListItem();
 			item.setKey(key);
 			item.setTo(Arrays.asList("superernie77"));
 			item.setSubject("message no."+i);
 			item.setUnread(true);
-			emailRepo.save(item);
+			emailListRepo.save(item);
+			
+			
+			Email email = new Email();
+			email.setFrom("superernie77");
+			email.setId(createdAt);
+			email.setSubject("message no."+i);
+			email.setTo(Arrays.asList("superernie77"));
+			email.setBody("New message body "+i);
+			
+			emailRepo.save(email);
 		}
 		
 	}
