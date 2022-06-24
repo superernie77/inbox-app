@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import com.supere77.inbox.repo.EmailRepository;
 import com.supere77.inbox.repo.FolderRepository;
 import com.supere77.inbox.service.FoldeService;
 
+@Controller
 public class ComposeController {
 	
 	
@@ -28,7 +30,7 @@ public class ComposeController {
 	@Autowired
 	private EmailRepository emailRepo;
 	
-	@GetMapping(value = "/emails/compose")
+	@GetMapping(value = "/compose")
 	public ModelAndView getComposePage(@AuthenticationPrincipal OAuth2User principal) {
 		
 		if(principal != null && StringUtils.hasText(principal.getAttribute("login"))) {
