@@ -26,6 +26,7 @@ import com.supere77.inbox.model.Folder;
 import com.supere77.inbox.repo.EmailListItemRepository;
 import com.supere77.inbox.repo.EmailRepository;
 import com.supere77.inbox.repo.FolderRepository;
+import com.supere77.inbox.repo.UnreadEmailStatsRepository;
 
 @SpringBootApplication
 @RestController
@@ -50,6 +51,9 @@ public class InboxApp {
 	@Autowired
 	private EmailRepository emailRepo;
 	
+	@Autowired
+	private UnreadEmailStatsRepository unreadRepo;
+	
 	@PostConstruct
 	public void init() {
 		
@@ -71,6 +75,10 @@ public class InboxApp {
 		repo.save(folder);
 		repo.save(folder2);
 		repo.save(folder3);
+		
+		unreadRepo.incrementCounter("superernie77", "Inbox");
+		unreadRepo.incrementCounter("superernie77", "Inbox");
+		unreadRepo.incrementCounter("superernie77", "Inbox");
 		
 		
 		for(int i = 0 ; i< 10 ; i++) {
