@@ -11,6 +11,7 @@ import com.supere77.inbox.model.EmailListItem;
 import com.supere77.inbox.model.EmailListItemKey;
 import com.supere77.inbox.repo.EmailListItemRepository;
 import com.supere77.inbox.repo.EmailRepository;
+import com.supere77.inbox.repo.UnreadEmailStatsRepository;
 
 @Service
 public class EmailService {
@@ -20,6 +21,9 @@ public class EmailService {
 	
 	@Autowired
 	private EmailListItemRepository listItemRepo;
+	
+	@Autowired
+	private UnreadEmailStatsRepository unreadRepo;
 	
 	
 	public void sendEmail(String from, List<String> to, String body, String subject) {
@@ -36,9 +40,11 @@ public class EmailService {
 		to.forEach( toId -> {
 			EmailListItem item = extracted(to, subject, mail, toId, "Inbox");
 			listItemRepo.save(item);
+			unreadRepo.incrementCounter(toId, "Inbox");
 		});
 		
 		EmailListItem itemOwner = extracted(to, subject, mail, mail.getFrom(), "Sent");
+		itemOwner.setUnread(false);
 		listItemRepo.save(itemOwner);
 		
 	}

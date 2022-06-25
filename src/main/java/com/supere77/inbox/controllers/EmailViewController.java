@@ -1,6 +1,7 @@
 package com.supere77.inbox.controllers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.supere77.inbox.model.Email;
 import com.supere77.inbox.model.Folder;
+import com.supere77.inbox.repo.EmailListItemRepository;
 import com.supere77.inbox.repo.EmailRepository;
 import com.supere77.inbox.repo.FolderRepository;
+import com.supere77.inbox.repo.UnreadEmailStatsRepository;
 import com.supere77.inbox.service.FoldeService;
 
 @Controller
@@ -29,6 +32,12 @@ public class EmailViewController {
 	
 	@Autowired
 	private EmailRepository emailRepo;
+	
+	@Autowired
+	private UnreadEmailStatsRepository unreadRepo;
+	
+	@Autowired
+	private EmailListItemRepository emailListRepo;
 
 	@GetMapping(value = "/emails/{id}")
 	public ModelAndView emailView(@AuthenticationPrincipal OAuth2User principal, @PathVariable String id) {
@@ -44,6 +53,11 @@ public class EmailViewController {
 			// fetch folder
 			List<Folder> defaultFolder = folderService.getDefaultFolder(user);
 			modelAndView.addObject("defaultFolders",defaultFolder);
+			
+			// fetch counter
+			Map<String,Integer> counter = folderService.mapCountToLabels(user);
+			modelAndView.addObject("stats", counter);
+			
 			
 			List<Folder> userFolders = repo.findAllByUserId(user);
 			modelAndView.addObject("userFolders",userFolders);

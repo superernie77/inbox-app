@@ -3,6 +3,7 @@ package com.supere77.inbox.controllers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class ComposeController {
 	private EmailService emailService;
 	
 	@GetMapping(value = "/compose")
-	public ModelAndView getComposePage(@RequestParam String to,
+	public ModelAndView getComposePage(@RequestParam(required = false) String to,
 			@AuthenticationPrincipal OAuth2User principal) {
 
 		if (principal != null && StringUtils.hasText(principal.getAttribute("login"))) {
@@ -50,6 +51,10 @@ public class ComposeController {
 			// fetch folder
 			List<Folder> defaultFolder = folderService.getDefaultFolder(user);
 			modelAndView.addObject("defaultFolders", defaultFolder);
+			
+			// fetch counter
+			Map<String,Integer> counter = folderService.mapCountToLabels(user);
+			modelAndView.addObject("stats", counter);
 
 			List<Folder> userFolders = repo.findAllByUserId(user);
 			modelAndView.addObject("userFolders", userFolders);
