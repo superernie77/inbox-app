@@ -61,6 +61,9 @@
 			</header>
 
 			<nav>
+				<div class="card">
+					<a href="/compose" class="btn btn-primary">Compose Message</a>
+				</div>
 				<div th:replace="components/folder-list.html :: folder-list(name='Folders', folders=${defaultFolders})">
     			</div>
    
@@ -73,16 +76,28 @@
 					<div  class="card-header">
 						View Email
 					</div>
-					<dl class="card-body">
-						<dt>Subject</dt>
-						<dd th:text="${email.subject}">definition</dd>
-						<dt>From</dt>
-						<dd th:text="${email.from}">definition</dd>
-						<dt>To</dt>
-						<dd th:text="${email.recipientString}">definition</dd>
-						<dt>Body</dt>
-						<dd th:text="${email.body}">definition</dd>
-					</ddl>
+					<div class="card-body">
+						<dl>
+							<dt>Subject</dt>
+							<dd th:text="${email.subject}">definition</dd>
+							<dt>From</dt>
+							<dd th:text="${email.from}">definition</dd>
+							<dt>To</dt>
+							<dd th:text="${email.recipientString}">definition</dd>
+							<dt>Body</dt>
+							<dd th:text="${email.body}">definition</dd>
+						</dl>
+						<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+							<a  
+  								th:href="@{'/compose?to=' + ${email.from}}"
+  								class="btn btn-primary" type="button">Reply</a>
+  							<a  
+  								th:href="@{'/compose?to=' + ${email.recipientString} + ',' + ${email.from}}"
+  								class="btn btn-primary me-md-2" type="button">Reply All</a>
+  							
+						</div>
+						
+					</div>
 				</div>	
 			</main>
 

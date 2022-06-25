@@ -54,13 +54,15 @@
 
 	<body>
 
-		<!-- https://www.digitalocean.com/community/tutorials/css-css-grid-holy-grail-layout -->
 		<div class="container">
 			<header>
 				<h1>Hello <spam th:text="${username}">Name</spam> </h1> 
 			</header>
 
 			<nav>
+				<div class="card">
+					<a href="/compose" class="btn btn-primary">Compose Message</a>
+				</div>
 				<div th:replace="components/folder-list.html :: folder-list(name='Folders', folders=${defaultFolders})">
     			</div>
    

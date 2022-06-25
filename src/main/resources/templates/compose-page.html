@@ -53,14 +53,15 @@
 
 
 	<body>
-
-		<!-- https://www.digitalocean.com/community/tutorials/css-css-grid-holy-grail-layout -->
 		<div class="container">
 			<header>
 				<h1>Hello <spam th:text="${username}">Name</spam> </h1> 
 			</header>
 
 			<nav>
+				<div class="card">
+					<a href="/compose" class="btn btn-primary">Compose Message</a>
+				</div>
 				<div th:replace="components/folder-list.html :: folder-list(name='Folders', folders=${defaultFolders})">
     			</div>
    
@@ -69,7 +70,7 @@
     		</nav>
 
 			<main>
-				<div  class="card" th:if="${email}">
+				<div  class="card">
 					<div  class="card-header">
 						Create New Email
 					</div>
@@ -77,7 +78,7 @@
 					<form>
 						<div class="mb-3">
   							<label for="toTextbox" class="form-label">To</label>
-  							<input type="text" class="form-control" id="toTextbox" ></input>
+  							<input th:value="${toIds}" type="text" class="form-control" id="toTextbox" ></input>
   							<div id="toHelp" clas="form-text">Enter comma seperated Github Ids of your recipients. </div>
 						</div>
 						<div class="mb-3">
@@ -87,7 +88,7 @@
 						</div>
 						<div class="mb-3">
   							<label for="bodyId" class="form-label">Body</label>
-  							<textarea type="text" class="form-control" id="bodyId" ></textarea>
+  							<textarea rows="10" type="text" class="form-control" id="bodyId" ></textarea>
   							
 						</div>
 					</form>
