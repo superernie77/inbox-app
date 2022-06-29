@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.supere77.inbox.model.Folder;
-import com.supere77.inbox.repo.EmailRepository;
 import com.supere77.inbox.repo.FolderRepository;
 import com.supere77.inbox.service.EmailService;
 import com.supere77.inbox.service.FoldeService;

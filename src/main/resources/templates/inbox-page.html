@@ -19,6 +19,8 @@
 			<style>
 				.container {
 					display: grid;
+					
+					margin-top: 20px;
 
 					grid-template-areas:
 						"header header header"
@@ -48,6 +50,7 @@
 				footer {
 					grid-area: footer;
 				}
+				
 			</style>
 	</head>
 
@@ -56,7 +59,10 @@
 
 		<div class="container">
 			<header>
-				<h1>Hello <spam th:text="${username}">Name</spam> </h1> 
+				<h3>Inbox App
+					<small class="text-muted" ">Welcome, </small>
+					<small class="text-muted" th:text="${userName}">User Name</small>
+				</h3> 
 			</header>
 
 			<nav>
@@ -76,12 +82,16 @@
 						Inbox
 					</div>
 					<div class="card-body">
-					 <a th:each="email : ${emaillist}" th:href="@{'/emails/'+ ${email.key.timeUUID}}" class="list-group-item list-group-item-action" >
+					 <a th:each="email : ${emaillist}" th:href="@{'/emails/'+ ${email.key.timeUUID}} + '?folder=' + ${folder}" 
+					 	class="list-group-item list-group-item-action"
+					 	th:classappend="${email.isUnread} ? list-group-item-primary"
+					 	
+					 	 >
     					<div class="d-flex w-100 justify-content-between">
-      						<h5 th:text="${email.subject}" class="mb-1">List group item heading</h5>
+      						<h5 th:text="${email.subject}" class="mb-1">Subject</h5>
       						<small th:text="${email.dateString}">3 days ago</small>
     					</div>
-    					<p th:text="${email.to}" class="mb-1">Some placeholder content in a paragraph.</p>
+    					<p th:text="${email.to}" class="mb-1">Abc, Def</p>
   					</a>
 					</div>
 				</div>
