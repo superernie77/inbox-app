@@ -67,32 +67,30 @@ public class EmailViewController {
 			Email email =  emailRepo.findById(UUID.fromString(id)).orElse(null);
 			
 			if (email != null) {
-				modelAndView.addObject("email", email);	
-				return modelAndView;	
-			}
-			
-			EmailListItemKey key = new EmailListItemKey();
-			key.setLabel(folder);
-			key.setId(user);
-			key.setTimeUUID(email.getId());
-			
-			Optional<EmailListItem> optionalItem =	emailListRepo.findById(key);
-			
-			if (optionalItem.isPresent()) {
-				EmailListItem item = optionalItem.get();
-				if(item.isUnread()) {
-					item.setUnread(false);
-					emailListRepo.save(item);
-					unreadRepo.decrementCounter(user, folder);
+				modelAndView.addObject("email", email);
+				EmailListItemKey key = new EmailListItemKey();
+				key.setLabel(folder);
+				key.setId(user);
+				key.setTimeUUID(email.getId());
+				
+				Optional<EmailListItem> optionalItem =	emailListRepo.findById(key);
+				
+				if (optionalItem.isPresent()) {
+					EmailListItem item = optionalItem.get();
+					if(item.isUnread()) {
+						item.setUnread(false);
+						emailListRepo.save(item);
+						unreadRepo.decrementCounter(user, folder);
+						
+					}
 					
 				}
-				
 			}
-			
-			
+
 			// Fetch counter
 			Map<String,Integer> counter = folderService.mapCountToLabels(user);
 			modelAndView.addObject("stats", counter);
+			return modelAndView;
 			
 		} 
 		return new ModelAndView("index");

@@ -16,7 +16,7 @@ public interface UnreadEmailStatsRepository extends CassandraRepository<UnreadEm
 	@Query("update unread_email_stats set unreadcount = unreadcount +1 where user_id = ?0 and label = ?1")
 	void incrementCounter(String userId, String folder);
 	
-	@Query("update unread_email_stats set unreadcount = unreadcount +1 where user_id = ?0 and label = ?1")
+	@Query("update unread_email_stats set unreadcount = unreadcount -1 where user_id = ?0 and label = ?1")
 	void decrementCounter(String userId, String folder);
 
 }
