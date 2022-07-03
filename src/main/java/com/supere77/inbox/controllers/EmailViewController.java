@@ -66,6 +66,11 @@ public class EmailViewController {
 			// fetch email
 			Email email =  emailRepo.findById(UUID.fromString(id)).orElse(null);
 			
+			// Check if user is alowed to see the email
+			if (!user.equals(email.getFrom()) && !email.getTo().contains(user) ) {
+				return new ModelAndView("redirect:/");
+			}
+			
 			if (email != null) {
 				modelAndView.addObject("email", email);
 				EmailListItemKey key = new EmailListItemKey();
@@ -81,17 +86,14 @@ public class EmailViewController {
 						item.setUnread(false);
 						emailListRepo.save(item);
 						unreadRepo.decrementCounter(user, folder);
-						
 					}
 					
 				}
+				// Fetch counter
+				Map<String,Integer> counter = folderService.mapCountToLabels(user);
+				modelAndView.addObject("stats", counter);
+				return modelAndView;
 			}
-
-			// Fetch counter
-			Map<String,Integer> counter = folderService.mapCountToLabels(user);
-			modelAndView.addObject("stats", counter);
-			return modelAndView;
-			
 		} 
 		return new ModelAndView("index");
 	}
