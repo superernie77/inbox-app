@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class ComposeController {
 	
 	@GetMapping(value = "/compose")
 	public ModelAndView getComposePage(@RequestParam(required = false) String to,
+			@RequestParam(required = false) UUID id,
 			@AuthenticationPrincipal OAuth2User principal) {
 
 		if (principal != null && StringUtils.hasText(principal.getAttribute("login"))) {

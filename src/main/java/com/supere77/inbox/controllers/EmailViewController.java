@@ -66,12 +66,12 @@ public class EmailViewController {
 			// fetch email
 			Email email =  emailRepo.findById(UUID.fromString(id)).orElse(null);
 			
-			// Check if user is alowed to see the email
-			if (!user.equals(email.getFrom()) && !email.getTo().contains(user) ) {
-				return new ModelAndView("redirect:/");
-			}
-			
 			if (email != null) {
+				// Check if user is allowed to see the email
+				if (!user.equals(email.getFrom()) && !email.getTo().contains(user) ) {
+					return new ModelAndView("redirect:/");
+				}
+				
 				modelAndView.addObject("email", email);
 				EmailListItemKey key = new EmailListItemKey();
 				key.setLabel(folder);

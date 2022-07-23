@@ -47,6 +47,8 @@ public class InboxController {
 		if(principal != null && StringUtils.hasText(principal.getAttribute("login"))) {
 			
 			ModelAndView modelAndView = new ModelAndView("inbox-page");
+			
+			// add Username
 			String user = principal.getAttribute("login");
 			modelAndView.addObject("username", principal.getAttribute("name"));
 			
