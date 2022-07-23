@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.supere77.inbox.model.Email;
 import com.supere77.inbox.model.Folder;
+import com.supere77.inbox.repo.EmailRepository;
 import com.supere77.inbox.repo.FolderRepository;
 import com.supere77.inbox.service.EmailService;
 import com.supere77.inbox.service.FoldeService;
@@ -36,8 +38,12 @@ public class ComposeController {
 	@Autowired
 	private EmailService emailService;
 	
+	@Autowired
+	private EmailRepository emailRepo;
+	
 	@GetMapping(value = "/compose")
-	public ModelAndView getComposePage(@RequestParam(required = false) String to,
+	public ModelAndView getComposePage(
+			@RequestParam(required = false) String to,
 			@RequestParam(required = false) UUID id,
 			@AuthenticationPrincipal OAuth2User principal) {
 
@@ -45,6 +51,17 @@ public class ComposeController {
 
 			ModelAndView modelAndView = new ModelAndView("compose-page");
 
+			// fetch email (if reply button clicked)
+			Email email =  emailRepo.findById(id).orElse(null);
+			if (email != null) {
+				// check if user has access
+				if (!emailService.doesHaveAcces(email, principal.getAttribute("login"))) {
+				 return new ModelAndView("redirect:/");	
+				}
+				modelAndView.addObject("subject", "Re: "+email.getSubject());
+				modelAndView.addObject("body", emailService.getReplyBody(email));
+			}
+			
 			// fetch username
 			String user = principal.getAttribute("login");
 			modelAndView.addObject("username", principal.getAttribute("name"));

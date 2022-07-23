@@ -49,6 +49,10 @@
 				footer {
 					grid-area: footer;
 				}
+				
+				.body-text {
+					white-space: pre-wrap;
+				}
 			</style>
 	</head>
 
@@ -89,7 +93,7 @@
 							<dt>To</dt>
 							<dd th:text="${email.recipientString}">definition</dd>
 							<dt>Body</dt>
-							<dd th:text="${email.body}">definition</dd>
+							<dd class="body-text" th:text="${email.body}">definition</dd>
 						</dl>
 						<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 							<a  
