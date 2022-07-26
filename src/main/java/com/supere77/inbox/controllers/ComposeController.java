@@ -37,31 +37,31 @@ public class ComposeController {
 
 	@Autowired
 	private EmailService emailService;
-	
+
 	@Autowired
 	private EmailRepository emailRepo;
-	
+
 	@GetMapping(value = "/compose")
-	public ModelAndView getComposePage(
-			@RequestParam(required = false) String to,
-			@RequestParam(required = false) UUID id,
-			@AuthenticationPrincipal OAuth2User principal) {
+	public ModelAndView getComposePage(@RequestParam(required = false) String to,
+			@RequestParam(required = false) UUID id, @AuthenticationPrincipal OAuth2User principal) {
 
 		if (principal != null && StringUtils.hasText(principal.getAttribute("login"))) {
 
 			ModelAndView modelAndView = new ModelAndView("compose-page");
 
 			// fetch email (if reply button clicked)
-			Email email =  emailRepo.findById(id).orElse(null);
-			if (email != null) {
-				// check if user has access
-				if (!emailService.doesHaveAcces(email, principal.getAttribute("login"))) {
-				 return new ModelAndView("redirect:/");	
+			if (id != null) {
+				Email email = emailRepo.findById(id).orElse(null);
+				if (email != null) {
+					// check if user has access
+					if (!emailService.doesHaveAcces(email, principal.getAttribute("login"))) {
+						return new ModelAndView("redirect:/");
+					}
+					modelAndView.addObject("subject", "Re: " + email.getSubject());
+					modelAndView.addObject("body", emailService.getReplyBody(email));
 				}
-				modelAndView.addObject("subject", "Re: "+email.getSubject());
-				modelAndView.addObject("body", emailService.getReplyBody(email));
 			}
-			
+
 			// fetch username
 			String user = principal.getAttribute("login");
 			modelAndView.addObject("username", principal.getAttribute("name"));
@@ -69,9 +69,9 @@ public class ComposeController {
 			// fetch folder
 			List<Folder> defaultFolder = folderService.getDefaultFolder(user);
 			modelAndView.addObject("defaultFolders", defaultFolder);
-			
+
 			// fetch counter
-			Map<String,Integer> counter = folderService.mapCountToLabels(user);
+			Map<String, Integer> counter = folderService.mapCountToLabels(user);
 			modelAndView.addObject("stats", counter);
 
 			List<Folder> userFolders = repo.findAllByUserId(user);
@@ -79,38 +79,35 @@ public class ComposeController {
 
 			List<String> uniqueIds = cleanIds(to);
 			modelAndView.addObject("toIds", String.join(", ", uniqueIds));
-			
+
 			return modelAndView;
 		}
 		return new ModelAndView("index");
 	}
 
-
 	private List<String> cleanIds(String to) {
 		if (StringUtils.hasText(to)) {
-		String[] splitIds = to.split(",");
+			String[] splitIds = to.split(",");
 
-		List<String> uniqueIds = Arrays.asList(splitIds).stream().map(id -> StringUtils.trimWhitespace(id))
-				.filter(id -> StringUtils.hasText(id)).distinct().collect(Collectors.toList());
-		return uniqueIds;
+			List<String> uniqueIds = Arrays.asList(splitIds).stream().map(id -> StringUtils.trimWhitespace(id))
+					.filter(id -> StringUtils.hasText(id)).distinct().collect(Collectors.toList());
+			return uniqueIds;
 		}
 		return new ArrayList<>();
 	}
-	
-	
+
 	@PostMapping("/send")
-	public ModelAndView sentEmails(
-			@RequestBody MultiValueMap<String,String> params,
+	public ModelAndView sentEmails(@RequestBody MultiValueMap<String, String> params,
 			@AuthenticationPrincipal OAuth2User principal) {
 		ModelAndView modelAndView = new ModelAndView("redirect:/");
-		
+
 		String subject = params.getFirst("subject");
 		String to = params.getFirst("to");
 		String body = params.getFirst("body");
-		
+
 		List<String> toIds = cleanIds(to);
 		emailService.sendEmail(principal.getAttribute("login"), toIds, body, subject);
-		
+
 		return modelAndView;
 	}
 }

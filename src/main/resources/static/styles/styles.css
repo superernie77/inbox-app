@@ -1,0 +1,32 @@
+.container {
+					display: grid;
+					margin-top: 20px;
+
+					grid-template-areas:
+						"header header header"
+						"nav content content"
+						"footer footer footer";
+
+					grid-template-columns: 200px 1fr 200px;
+					grid-template-rows: auto 1fr auto;
+					grid-gap: 10px;
+
+					height: 100vh;
+				}
+
+				header {
+					grid-area: header;
+				}
+
+				nav {
+					grid-area: nav;
+					margin-left: 0.5rem;
+				}
+
+				main {
+					grid-area: content;
+				}
+
+				footer {
+					grid-area: footer;
+				}
